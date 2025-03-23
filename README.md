@@ -1,4 +1,4 @@
-```md
+
 ## Research Paper
 
 [**BIM- and blockchain-enabled Automatic Procurement System (BBAPS) removing relationship bias**](https://doi.org/10.1016/j.autcon.2024.105779)
