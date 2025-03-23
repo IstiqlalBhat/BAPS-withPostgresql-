@@ -114,7 +114,7 @@ This system aims to:
 
 1. **Compile and Deploy**  
    - Open `ProjectManagement.sol` in [Remix](https://remix.ethereum.org/) (or use Truffle/Hardhat).  
-   - Check Solidity version.  
+   - Set Solidity version to 0.8.14
    - Deploy to Ganache or a desired testnet.
 
 2. **Obtain Contract Address & ABI**  
