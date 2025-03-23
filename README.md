@@ -253,9 +253,6 @@ https://doi.org/10.1016/j.autcon.2024.105779
 
 ---
 
-## License
 
-This project is open-source under the [MIT License](LICENSE.md).
-
-**Disclaimer**: BBAPS is a **research-oriented proof of concept**. Any production usage should undergo thorough security audits, real-world testing, and regulatory compliance checks.
+**Disclaimer**: BBAPS is a raw **research-oriented proof of concept**. Any production usage should undergo thorough security audits, real-world testing, and regulatory compliance checks.
 ```
