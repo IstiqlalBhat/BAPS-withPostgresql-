@@ -1,6 +1,6 @@
 
 
-[**Research Paper**]
+# Research Paper
 ```
 (https://doi.org/10.1016/j.autcon.2024.105779)
 ```
