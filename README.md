@@ -1,70 +1,237 @@
-# Getting Started with Create React App
+```markdown
+# Project Management DApp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository demonstrates a decentralized application (DApp) for managing construction projects, general contractors, and subcontractors on the Ethereum blockchain. It uses a **Solidity** smart contract (`ProjectManagement.sol`), along with a **React** front-end that interacts with the contract via **web3**.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Table of Contents
+1. [Overview](#overview)
+2. [Smart Contract](#smart-contract)
+3. [Prerequisites](#prerequisites)
+4. [Deployment](#deployment)
+5. [Front-End Setup](#front-end-setup)
+6. [Configuration](#configuration)
+7. [Usage](#usage)
+8. [CSV File Support](#csv-file-support)
+9. [File Structure](#file-structure)
+10. [License](#license)
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Overview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This DApp allows:
+- **Owners** to register General Contractors (GCs) and Subcontractors.
+- **General Contractors** to add new projects, set trust factors for subcontractors, and select project winners.
+- **Subcontractors** to provide their availability, location, work type, and unit costs.
+- **Everyone** to view relevant information such as projects, subcontractor data, and project winners.
 
-### `npm test`
+### Key Features
+- **Add Projects**: A GC can upload project details.
+- **Add Subcontractor Data**: Subcontractors can upload their cost and availability data.
+- **Calculate & Sort by Trust Factor**: Built-in trust scoring to help GCs select suitable subcontractors.
+- **Winner Finalization**: GCs finalize a winner for a project.
+- **CSV Import**: Automatically populate project data from a CSV file (e.g., from Autodesk Revit).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Smart Contract
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The core logic is in:
+```
+ProjectManagement.sol
+```
+which imports a utility library:
+```
+Utils.sol
+```
+(Ensure that `Utils.sol` resides in the same folder or that your import statements match your directory structure.)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Important Contracts/Structs/Functions
+- **`Project`**: Stores project-specific data (schedule, location, cost details).
+- **`Contractor`**: Stores contractor info (ID, name, Ethereum account).
+- **`TrustFactorStruct`**: Stores trust factor scores (`cost`, `time`, `quality`) for each subcontractor.
+- **`ProjectManagement`** contract includes methods to:
+  - Register GCs and subcontractors.
+  - Add projects.
+  - Add subcontractor data.
+  - Compute trust factors.
+  - Sort subcontractors based on trust factor.
+  - Finalize a winner for a project.
+  - Retrieve all relevant data.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Node.js and npm**  
+   - Recommended to use Node v14+ and npm v6+ (or corresponding Yarn version).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Ganache / Test Network**  
+   - You need a local test environment such as **Ganache** or a public test network (like Ropsten, Goerli, Sepolia, etc.) to deploy and test your contract.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. **MetaMask** (or another Web3-compatible wallet)  
+   - Required to interact with the DApp from your browser.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+4. **Remix IDE** (optional)  
+   - You can deploy the smart contract using [Remix](https://remix.ethereum.org/) or Truffle/Hardhat.
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Deployment
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Open and Compile**  
+   - In Remix, create or upload your `ProjectManagement.sol` and `Utils.sol`.
+   - Compile the contracts (ensure the `pragma solidity` version matches your Remix compiler).
 
-### Code Splitting
+2. **Deploy**  
+   - Use your desired **environment** (e.g., Ganache local network or a test network).
+   - Deploy the `ProjectManagement` contract.
+   - Copy the **deployed contract address**.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+3. **Take note of the ABI**  
+   - After deployment, retrieve the **ABI** (Application Binary Interface). You will need the ABI to interact with your contract in the front-end.
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Front-End Setup
 
-### Making a Progressive Web App
+Assuming you have a front-end folder (e.g., `client`) with the React application:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+1. **Install Dependencies**  
+   In your front-end directory:
+   ```bash
+   npm install
+   ```
+2. **Start Development Server**  
+   ```bash
+   npm run start
+   ```
+   This should spin up the local React development server (typically at `http://localhost:3000`).
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Configuration
 
-### Deployment
+Inside the React app, there is a configuration file (for example, `config/contract.js`) which contains:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```js
+import React from "react";
+import ABI from "./abi";
+import web3 from "./web3";
 
-### `npm run build` fails to minify
+const contractAddress = "0xYourDeployedContractAddress"; // <-- Replace with your contract address
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+const mainContract = new web3.eth.Contract(ABI, contractAddress);
+
+export default mainContract;
+```
+
+- **ABI**: Imported from a local file `abi.js` (or however you choose to store your ABI).
+- **web3**: A web3 instance (e.g., using `window.ethereum` from MetaMask or a custom provider).
+- **contractAddress**: Must be replaced with the **actual address** at which your `ProjectManagement` contract was deployed.
+
+---
+
+## Usage
+
+1. **Connect Wallet**  
+   - Ensure MetaMask is connected to the same network (Ganache or testnet) on which you deployed the contract.
+
+2. **Add General Contractor**  
+   - As the contract owner, you can register new general contractors.
+
+3. **Add Subcontractor**  
+   - As the contract owner, register new subcontractors.
+
+4. **Subcontractor Uploads Data**  
+   - Subcontractors log in (with their address) and fill in availability, location, and cost details.
+
+5. **General Contractor Adds Projects**  
+   - GCs can create projects, specifying schedule, location, cost, etc.
+   - The front-end includes a feature to parse CSV data (e.g., from **Autodesk Revit**) to quickly fill in fields.
+
+6. **View & Sort Potential Matches**  
+   - GCs can view matched subcontractors, sorted by trust factor.
+   - GCs update the trust factor if needed.
+
+7. **Finalize Winner**  
+   - Once a suitable subcontractor is found, GCs finalize the winner for the project.
+   - The contract stores the final decision on-chain.
+
+---
+
+## CSV File Support
+
+The front-end uses [Papa Parse](https://www.papaparse.com/) to parse a CSV file (e.g., a quantity take-off from Autodesk Revit). 
+
+In the component (`AddProject.jsx`), you can:
+
+1. **Upload CSV File**  
+   - Click the file input button and select your CSV file.
+2. **Map CSV Fields**  
+   - The table is dynamically generated with the CSV rows.
+3. **Click a Row**  
+   - On clicking a table row, fields (e.g., `Family and Type`, `Material Costs`, `Labor Costs`) populate automatically in the project form.
+4. **Submit Project**  
+   - Finally, click **Add Project** to send a transaction, creating a new project on the blockchain.
+
+---
+
+## File Structure
+
+A simplified version of the relevant file structure might look like this:
+
+```
+your-repo/
+├── contracts/
+│   ├── Utils.sol
+│   └── ProjectManagement.sol
+├── client/
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── contract.js
+│   │   │   ├── abi.js
+│   │   │   └── web3.js
+│   │   └── components/
+│   │       └── common/
+│   │           └── Project/
+│   │               └── AddProject.jsx
+│   ├── package.json
+│   └── ...
+└── README.md
+```
+
+**Note**: The exact structure may vary. The important parts are:
+- `contracts` folder for Solidity files
+- `config` folder for your front-end’s contract address & ABI
+- `AddProject.jsx` for CSV file parsing & project creation
+
+---
+
+## License
+
+```
+SPDX-License-Identifier: MIT
+```
+
+This project is licensed under the **MIT License**. Feel free to use, modify, and distribute this code as needed. See the [LICENSE](https://opensource.org/licenses/MIT) file (or the SPDX license identifier in the source code) for more details.
+
+---
+
+## Contributing
+
+Feel free to open issues or submit pull requests. Contributions, suggestions, and improvements are highly appreciated.
+
+---
+
+### Author
+
+- **Your Name / GitHub Handle**  
+  For any questions or support, feel free to create an issue or contact me directly.
+
+---
+
+**Happy Building!**
+```
