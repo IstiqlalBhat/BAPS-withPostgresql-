@@ -212,3 +212,14 @@ your-repo/
 
 ---
 
+Citation
+If you use BBAPS in your research or project, please cite the accompanying paper:
+
+bash
+Copy
+Edit
+Yoon, J. H., Aurangzeb, I., & McNamara, S. (2024).
+BIM- and blockchain-enabled Automatic Procurement System (BBAPS) removing relationship bias.
+Automation in Construction, 168, 105779.
+https://doi.org/10.1016/j.autcon.2024.105779
+Disclaimer: The BBAPS prototype is a research-oriented proof of concept. Actual usage in production environments requires careful consideration of legal and regulatory factors, thorough security audits, and robust testing.
