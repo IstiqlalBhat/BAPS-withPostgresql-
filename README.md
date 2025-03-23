@@ -1,5 +1,8 @@
-```md
-[**Research Paper**](https://doi.org/10.1016/j.autcon.2024.105779)
+
+
+[**Research Paper**]
+```
+(https://doi.org/10.1016/j.autcon.2024.105779)
 ```
 # Project Management DApp (BBAPS)
 
