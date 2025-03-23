@@ -1,4 +1,6 @@
-```markdown
+Link to the Research Paper:
+https://doi.org/10.1016/j.autcon.2024.105779
+
 # Project Management DApp
 
 This repository demonstrates a decentralized application (DApp) for managing construction projects, general contractors, and subcontractors on the Ethereum blockchain. It uses a **Solidity** smart contract (`ProjectManagement.sol`), along with a **React** front-end that interacts with the contract via **web3**.
@@ -210,28 +212,3 @@ your-repo/
 
 ---
 
-## License
-
-```
-SPDX-License-Identifier: MIT
-```
-
-This project is licensed under the **MIT License**. Feel free to use, modify, and distribute this code as needed. See the [LICENSE](https://opensource.org/licenses/MIT) file (or the SPDX license identifier in the source code) for more details.
-
----
-
-## Contributing
-
-Feel free to open issues or submit pull requests. Contributions, suggestions, and improvements are highly appreciated.
-
----
-
-### Author
-
-- **Your Name / GitHub Handle**  
-  For any questions or support, feel free to create an issue or contact me directly.
-
----
-
-**Happy Building!**
-```
