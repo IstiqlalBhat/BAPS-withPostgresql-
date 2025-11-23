@@ -1,0 +1,9 @@
+{
+    "name": "BAPS",
+    "version": "1.0.0",
+    "description": "BIM + AI Procurement System for General Contractors",
+    "author": "BAPS Team",
+    "type": "extension",
+    "engine_version": 277,
+    "rocket_mode_compatible": true
+}
