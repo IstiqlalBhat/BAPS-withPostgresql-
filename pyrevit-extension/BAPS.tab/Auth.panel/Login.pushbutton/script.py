@@ -31,6 +31,7 @@ class LoginWindow(forms.WPFWindow):
         forms.WPFWindow.__init__(self, xaml_file)
         self.email = None
         self.password = None
+        self.action = None  # 'login', 'register', or 'cancel'
 
     def login_click(self, sender, args):
         self.email = self.email_tb.Text
@@ -50,6 +51,17 @@ class LoginWindow(forms.WPFWindow):
             System.Action(lambda: None)
         )
         
+        self.action = 'login'
+        self.Close()
+    
+    def register_click(self, sender, args):
+        self.email = self.email_tb.Text
+        self.password = self.password_pb.Password
+        self.action = 'register'
+        self.Close()
+    
+    def cancel_click(self, sender, args):
+        self.action = 'cancel'
         self.Close()
 
 
@@ -58,20 +70,46 @@ def main():
     login_window = LoginWindow()
     login_window.show_dialog()
     
-    if login_window.email and login_window.password:
-        email = login_window.email
-        password = login_window.password
-        # Import API client
-        try:
-            import sys
-            lib_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'lib')
-            if lib_path not in sys.path:
-                sys.path.insert(0, lib_path)
+    if login_window.action == 'cancel' or not login_window.email:
+        return
+    
+    email = login_window.email
+    password = login_window.password
+    
+    # Import API client
+    try:
+        import sys
+        lib_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'lib')
+        if lib_path not in sys.path:
+            sys.path.insert(0, lib_path)
+        
+        from api_client import BAPSClient
+        
+        # Initialize client
+        client = BAPSClient()
+        
+        # Handle registration
+        if login_window.action == 'register':
+            result = client.register(email, password, role='GENERAL_CONTRACTOR')
+            token = result.get('token') or result.get('accessToken')
             
-            from api_client import BAPSClient
-            
-            # Initialize client and attempt login
-            client = BAPSClient()
+            if token:
+                user_data = result.get('user', {})
+                save_token(token, user_data)
+                forms.alert(
+                    'Registration successful!\n\nWelcome to BAPS, {}\n\nYou are now logged in as a General Contractor.'.format(email),
+                    title='Registration Success'
+                )
+            else:
+                forms.alert(
+                    'Registration Failed\n\nNo token received from server.\n\nPlease try again.',
+                    title='Error',
+                    warn_icon=True
+                )
+            return
+        
+        # Handle login
+        if login_window.action == 'login':
             result = client.login(email, password)
             
             # Handle both 'token' and 'accessToken' fields
@@ -101,14 +139,13 @@ def main():
                     title='Error',
                     warn_icon=True
                 )
-                
-        except Exception as e:
-            error_msg = str(e)
-            forms.alert(
-                'Login Error\n\n{}\n\nPlease check:\n- Your email and password\n- Backend server is running at http://localhost:3001\n- Your account exists'.format(error_msg),
-                title='Login Error',
-                warn_icon=True
-            )
+    except Exception, e:
+        error_msg = str(e)
+        forms.alert(
+            'Login Error\n\n{}\n\nPlease check:\n- Your email and password\n- Backend server is running at http://localhost:3001\n- Your account exists'.format(error_msg),
+            title='Login Error',
+            warn_icon=True
+        )
 
 
 if __name__ == '__main__':

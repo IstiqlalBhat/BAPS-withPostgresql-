@@ -16,7 +16,10 @@
       "Bash(findstr:*)",
       "Bash(psql:*)",
       "Bash(echo:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(copy:*)",
+      "Bash(del \"C:\\CodeJaai\\BBAPS\\BBAPS\\pyrevit-extension\\BAPS.tab\\Auth.panel\\AuthStatus.pushbutton\\create_icon.py\")",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

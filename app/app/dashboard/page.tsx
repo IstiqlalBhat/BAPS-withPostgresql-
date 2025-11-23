@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { UploadAvailability } from '@/components/UploadAvailability';
+import { RevitConnectionStatus } from '@/components/RevitConnectionStatus';
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -44,6 +45,7 @@ export default function DashboardPage() {
                         <p className="text-sm text-slate-600">BIM + AI Procurement System</p>
                     </div>
                     <div className="flex items-center gap-4">
+                        <RevitConnectionStatus />
                         <span className="text-sm text-slate-600">{user.email}</span>
                         <Button variant="outline" onClick={handleLogout}>
                             Logout

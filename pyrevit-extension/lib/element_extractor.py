@@ -41,12 +41,14 @@ class ElementExtractor:
         try:
             data['properties']['Mark'] = self._get_parameter_value(element, 'Mark')
             data['properties']['Comments'] = self._get_parameter_value(element, 'Comments')
-            data['properties']['Type'] = element.get_Parameter(BuiltInParameter.ELEM_TYPE_PARAM).AsValueString()
-            
+            type_param = element.GetParameter(BuiltInParameter.ELEM_TYPE_PARAM)
+            if type_param and type_param.HasValue:
+                data['properties']['Type'] = type_param.AsValueString()
+
             # BIM metadata
             data['bimMetadata']['Level'] = self._get_parameter_value(element, 'Level')
             data['bimMetadata']['Phase'] = self._get_parameter_value(element, 'Phase Created')
-            
+
         except:
             pass
         

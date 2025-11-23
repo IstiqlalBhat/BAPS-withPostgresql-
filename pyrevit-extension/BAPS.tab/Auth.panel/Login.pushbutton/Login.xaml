@@ -1,6 +1,6 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="BAPS Login - General Contractor" Height="260" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="BAPS Login - General Contractor" Height="300" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <StackPanel Margin="20">
         <TextBlock Text="BAPS Login" FontWeight="Bold" FontSize="18" Margin="0,0,0,10" HorizontalAlignment="Center"/>
         <TextBlock Text="General Contractor Authentication" FontSize="11" Margin="0,0,0,15" HorizontalAlignment="Center" Foreground="#666"/>
@@ -13,6 +13,15 @@
         
         <TextBlock x:Name="status_tb" Text="" FontSize="11" Margin="0,0,0,10" HorizontalAlignment="Center" Foreground="#0066CC" FontStyle="Italic" Visibility="Collapsed"/>
         
-        <Button x:Name="login_btn" Content="Login to BAPS" Click="login_click" Height="35" IsDefault="True" FontWeight="SemiBold" Background="#0066CC" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+        <Button x:Name="login_btn" Content="Login to BAPS" Click="login_click" Height="35" IsDefault="True" FontWeight="SemiBold" Background="#0066CC" Foreground="White" BorderThickness="0" Cursor="Hand" Margin="0,0,0,8"/>
+        
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="register_btn" Grid.Column="0" Content="Register" Click="register_click" Height="30" FontWeight="SemiBold" Background="#28A745" Foreground="White" BorderThickness="0" Cursor="Hand" Margin="0,0,4,0"/>
+            <Button x:Name="cancel_btn" Grid.Column="1" Content="Cancel" Click="cancel_click" Height="30" FontWeight="SemiBold" Background="#DC3545" Foreground="White" BorderThickness="0" Cursor="Hand" Margin="4,0,0,0"/>
+        </Grid>
     </StackPanel>
 </Window>
