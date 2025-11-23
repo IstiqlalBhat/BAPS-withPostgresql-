@@ -11,6 +11,7 @@ export default function DashboardPage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [stats, setStats] = useState({ elements: 0, projects: 0, pricing: 0 });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         // Check if user is authenticated
@@ -22,7 +23,33 @@ export default function DashboardPage() {
             return;
         }
 
-        setUser(JSON.parse(userData));
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+
+        // Fetch elements count
+        const fetchStats = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/elements', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const elementsList = Array.isArray(data) ? data : data.elements || [];
+                    setStats(prev => ({ ...prev, elements: elementsList.length }));
+                }
+            } catch (err) {
+                console.error('Error fetching stats:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
     }, [router]);
 
     const handleLogout = () => {
