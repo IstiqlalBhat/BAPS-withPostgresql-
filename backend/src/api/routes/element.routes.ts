@@ -11,6 +11,7 @@ router.use(authenticateToken);
 // List and create elements
 router.get('/', ElementController.list);
 router.post('/', requireRole(UserRole.GC_USER, UserRole.GC_ADMIN), ElementController.create);
+router.post('/batch', requireRole(UserRole.GC_USER, UserRole.GC_ADMIN), ElementController.createBatch);
 
 // Element operations
 router.get('/:id', ElementController.getById);

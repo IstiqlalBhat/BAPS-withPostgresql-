@@ -6,6 +6,7 @@ __author__ = 'BAPS Team'
 from pyrevit import forms, script
 import os
 import json
+import time
 
 # Get config directory
 config_dir = os.path.join(os.getenv('APPDATA'), 'BAPS')
@@ -19,7 +20,8 @@ def save_token(token, user_data):
     """Save authentication token and user data to local config file"""
     config = {
         'token': token,
-        'user': user_data
+        'user': user_data,
+        'timestamp': time.time()  # Save login timestamp
     }
     with open(config_file, 'w') as f:
         json.dump(config, f)

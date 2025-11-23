@@ -33,10 +33,12 @@ class ElementExtractor:
             'revitId': str(element.Id),
             'name': element.Name if hasattr(element, 'Name') else 'Unnamed',
             'category': category_name,
+            'quantity': 1.0,  # Default quantity is 1 item
+            'unit': 'Each',   # Default unit
             'properties': {},
             'bimMetadata': {}
         }
-        
+
         # Get common parameters
         try:
             data['properties']['Mark'] = self._get_parameter_value(element, 'Mark')
@@ -51,7 +53,7 @@ class ElementExtractor:
 
         except:
             pass
-        
+
         return data
     
     def extract_walls(self):
@@ -60,22 +62,28 @@ class ElementExtractor:
             .OfClass(Wall)\
             .WhereElementIsNotElementType()\
             .ToElements()
-        
+
         result = []
         for wall in walls:
             data = self._extract_element_data(wall, 'Walls')
-            
+
             # Wall-specific data
             try:
                 data['properties']['Height'] = self._get_parameter_value(wall, 'Unconnected Height')
                 data['properties']['Length'] = self._get_parameter_value(wall, 'Length')
                 data['properties']['Area'] = self._get_parameter_value(wall, 'Area')
                 data['properties']['Volume'] = self._get_parameter_value(wall, 'Volume')
+
+                # Use area as quantity for walls (in square meters)
+                area = self._get_parameter_value(wall, 'Area')
+                if area:
+                    data['quantity'] = round(float(area), 2)
+                    data['unit'] = 'm²'
             except:
                 pass
-            
+
             result.append(data)
-        
+
         return result
     
     def extract_doors(self):

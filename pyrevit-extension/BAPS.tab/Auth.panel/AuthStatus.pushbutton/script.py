@@ -7,6 +7,8 @@ from pyrevit import forms, script
 import os
 import json
 import System.Windows
+import time
+from datetime import datetime, timedelta
 
 # Get config file path
 config_dir = os.path.join(os.getenv('APPDATA'), 'BAPS')
@@ -55,6 +57,7 @@ class AuthStatusWindow(forms.WPFWindow):
             user_data = auth_data.get('user', {})
             email = user_data.get('email', 'Unknown')
             role = user_data.get('role', 'Unknown')
+            timestamp = auth_data.get('timestamp', 0)
 
             # Set status indicator (green)
             self.status_indicator.Fill = System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 40, 167, 69))
@@ -65,8 +68,14 @@ class AuthStatusWindow(forms.WPFWindow):
             self.email_text.Text = email
             self.role_text.Text = role
 
-            # Set token status
-            self.token_status.Text = "Valid token stored. Revit can transfer data to BAPS backend."
+            # Calculate token expiration (24 hours from login)
+            expiration_time = datetime.fromtimestamp(timestamp) + timedelta(hours=24)
+            hours_remaining = (expiration_time - datetime.now()).total_seconds() / 3600
+
+            if hours_remaining > 0:
+                self.token_status.Text = "Valid token. Expires in {:.1f} hours.".format(hours_remaining)
+            else:
+                self.token_status.Text = "Token expired. Please login again."
 
             # Enable logout button
             self.logout_btn.IsEnabled = True

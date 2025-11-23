@@ -7,14 +7,30 @@ import { CreateElementRequest } from '@common/types/element.types';
 
 export class ElementController {
     /**
-     * GET /elements - List all elements
+     * GET /elements - List all elements with pagination
      */
     static async list(req: AuthRequest, res: Response) {
         try {
-            const elements = await Element.findAll({
+            // Get pagination parameters from query
+            const page = Math.max(1, parseInt(req.query.page as string) || 1);
+            const limit = Math.min(100, parseInt(req.query.limit as string) || 20);
+            const offset = (page - 1) * limit;
+
+            const { count, rows } = await Element.findAndCountAll({
                 order: [['createdAt', 'DESC']],
+                limit,
+                offset
             });
-            res.json({ elements });
+
+            res.json({
+                elements: rows,
+                pagination: {
+                    total: count,
+                    page,
+                    limit,
+                    pages: Math.ceil(count / limit)
+                }
+            });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
@@ -32,12 +48,64 @@ export class ElementController {
                 return res.status(401).json({ error: 'User not authenticated' });
             }
 
+            // Validate required fields
+            if (!data.name || !data.category || !data.quantity || !data.unit) {
+                return res.status(400).json({
+                    error: 'Missing required fields: name, category, quantity, unit'
+                });
+            }
+
             const element = await Element.create({
                 ...data,
                 createdBy: userId,
             });
 
             res.status(201).json({ element });
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    /**
+     * POST /elements/batch - Create multiple elements from BIM data
+     */
+    static async createBatch(req: AuthRequest, res: Response) {
+        try {
+            const elements: CreateElementRequest[] = req.body.elements;
+            const userId = req.user?.userId;
+
+            if (!userId) {
+                return res.status(401).json({ error: 'User not authenticated' });
+            }
+
+            if (!Array.isArray(elements) || elements.length === 0) {
+                return res.status(400).json({
+                    error: 'Invalid request: elements array is required and must not be empty'
+                });
+            }
+
+            // Validate all elements have required fields
+            for (const element of elements) {
+                if (!element.name || !element.category || !element.quantity || !element.unit) {
+                    return res.status(400).json({
+                        error: 'Missing required fields in one or more elements: name, category, quantity, unit'
+                    });
+                }
+            }
+
+            // Add createdBy to all elements
+            const elementsWithUser = elements.map(el => ({
+                ...el,
+                createdBy: userId
+            }));
+
+            // Batch insert using bulkCreate for better performance
+            const createdElements = await Element.bulkCreate(elementsWithUser);
+
+            res.status(201).json({
+                message: `Successfully created ${createdElements.length} elements`,
+                elements: createdElements
+            });
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
