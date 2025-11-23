@@ -10,10 +10,12 @@ router.use(authenticateToken);
 
 // List and create elements
 router.get('/', ElementController.list);
-router.post('/', requireRole(UserRole.GC_USER, UserRole.GC_ADMIN), ElementController.create);
+
+// Batch operations (must come before /:id to match correctly)
 router.post('/batch', requireRole(UserRole.GC_USER, UserRole.GC_ADMIN), ElementController.createBatch);
 
-// Element operations
+// Single element operations
+router.post('/', requireRole(UserRole.GC_USER, UserRole.GC_ADMIN), ElementController.create);
 router.get('/:id', ElementController.getById);
 router.get('/:id/suggest-price', ElementController.suggestPrice);
 router.put('/:id/pricing', requireRole(UserRole.GC_ADMIN), ElementController.updatePricing);
